@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "7b7kzztade4=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\kirub\\Documents\\BYU-projectcourses\\.NET-CSE-325\\ASP.NET\\project\\HomeHub\\HomeHub.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\kirub\\.nuget\\packages\\microsoft.aspnetcore.app.internal.assets\\10.0.9\\microsoft.aspnetcore.app.internal.assets.10.0.9.nupkg.sha512"
+  ],
+  "logs": []
+}
