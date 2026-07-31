@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HomeHub")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0645e1cb144e378d613c0a2bf71b5faf27306cb7")]
 [assembly: System.Reflection.AssemblyProductAttribute("HomeHub")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HomeHub")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
