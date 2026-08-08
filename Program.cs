@@ -4,11 +4,12 @@ using HomeHub.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
+// Register Entity Framework Core and configure the application
+// to use the Azure SQL database defined in the connection string.
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")
-    ));
+        builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
@@ -31,5 +32,25 @@ app.UseAntiforgery();
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+
+
+
+app.MapGet("/health/database", async (ApplicationDbContext db) =>
+{
+    try
+    {
+        var canConnect = await db.Database.CanConnectAsync();
+
+        return canConnect
+            ? Results.Ok(new { status = "connected" })
+            : Results.Problem("Database connection failed.");
+    }
+    catch (Exception)
+    {
+        return Results.Problem(
+            detail: "Unable to connect to the database.",
+            statusCode: 500);
+    }
+});
 
 app.Run();

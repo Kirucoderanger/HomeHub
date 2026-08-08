@@ -10,10 +10,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("ab95ea2d-eb90-44c4-b710-a7b7887718f4")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("HomeHub")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+87b8867f355dfd0de8fa89ba5ecdac14fc9065f8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+67fc5768a29dd4c7ba4b98cf0c8eb3b9e48708b1")]
 [assembly: System.Reflection.AssemblyProductAttribute("HomeHub")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HomeHub")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
