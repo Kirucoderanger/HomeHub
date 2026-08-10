@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
+using HomeHub.Data;
 namespace HomeHub.Models;
 
 public class Property

@@ -1,6 +1,7 @@
-using HomeHub.Data;
-using Microsoft.EntityFrameworkCore;
 using HomeHub.Components;
+using HomeHub.Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,20 +30,31 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+
+    // The default HSTS value is 30 days. You may want to change this
+    // for production scenarios.
     app.UseHsts();
 }
-app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
+
+app.UseStatusCodePagesWithReExecute(
+    "/not-found",
+    createScopeForStatusCodePages: true);
+
 app.UseHttpsRedirection();
 
 app.UseAntiforgery();
 
+// Authentication and authorization middleware.
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapStaticAssets();
-app.MapRazorComponents<App>()
+
+app.MapRazorComponents<HomeHub.Components.App>()
     .AddInteractiveServerRenderMode();
 
-
-
+// Database health check endpoint.
+// This endpoint is intended for development and diagnostics.
 app.MapGet("/health/database", async (ApplicationDbContext db) =>
 {
     try
@@ -62,3 +74,4 @@ app.MapGet("/health/database", async (ApplicationDbContext db) =>
 });
 
 app.Run();
+
