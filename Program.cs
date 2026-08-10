@@ -1,6 +1,6 @@
-using HomeHub.Components;
-using Microsoft.EntityFrameworkCore;
 using HomeHub.Data;
+using Microsoft.EntityFrameworkCore;
+using HomeHub.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +10,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Register ASP.NET Core Identity and configure the application
+// to use ApplicationUser for authentication and authorization.
+builder.Services
+    .AddDefaultIdentity<ApplicationUser>(options =>
+    {
+        options.SignIn.RequireConfirmedAccount = false;
+    })
+    .AddEntityFrameworkStores<ApplicationDbContext>();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
