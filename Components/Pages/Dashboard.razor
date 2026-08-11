@@ -1,0 +1,143 @@
+@page "/dashboard"
+@attribute [Authorize]
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Identity
+@using HomeHub.Data
+
+@inject UserManager<ApplicationUser> UserManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+
+<PageTitle>Dashboard - HomeHub</PageTitle>
+
+<div class="container py-5">
+
+    @if (IsLoading)
+    {
+        <div class="text-center py-5">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3 text-muted">Loading your HomeHub dashboard...</p>
+        </div>
+    }
+    else
+    {
+        @if (RegisteredSuccessfully)
+        {
+            <div class="alert alert-success" role="alert">
+                <strong>Registration successful!</strong>
+                Your HomeHub account has been created successfully.
+            </div>
+        }
+
+        <div class="mb-4">
+            <h1>Welcome@(IsReturningUser ? " back" : ""), @FirstName!</h1>
+
+            <p class="lead text-muted">
+                @(IsReturningUser
+                    ? "We're glad to see you again."
+                    : "Welcome to HomeHub. Your account is ready to use.")
+            </p>
+        </div>
+
+        <div class="row g-4">
+
+            <div class="col-12 col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h2 class="h5">Discover Properties</h2>
+                        <p class="text-muted">
+                            Browse properties available on HomeHub.
+                        </p>
+
+                        <button class="btn btn-primary">
+                            Explore Properties
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h2 class="h5">My Properties</h2>
+                        <p class="text-muted">
+                            Manage properties you have listed.
+                        </p>
+
+                        <button class="btn btn-outline-primary">
+                            My Properties
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h2 class="h5">My Favorites</h2>
+                        <p class="text-muted">
+                            Keep track of properties you are interested in.
+                        </p>
+
+                        <button class="btn btn-outline-primary">
+                            Favorites
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    }
+</div>
+
+@code {
+    private string FirstName = "User";
+    private bool IsLoading = true;
+    private bool RegisteredSuccessfully;
+    private bool IsReturningUser;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Obtain the authentication state established by ASP.NET Core Identity.
+        var authenticationState =
+            await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+        var principal = authenticationState.User;
+
+        if (principal.Identity?.IsAuthenticated != true)
+        {
+            NavigationManager.NavigateTo(
+                "/account/login",
+                forceLoad: true);
+
+            return;
+        }
+
+        // Retrieve the authenticated user's Identity record from Azure SQL.
+        var user = await UserManager.GetUserAsync(principal);
+
+        if (user is not null)
+        {
+            FirstName = user.FirstName;
+        }
+
+        // The registration query parameter is used only for the
+        // first dashboard visit immediately after account creation.
+        var uri = NavigationManager.ToAbsoluteUri(
+            NavigationManager.Uri);
+
+        var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(
+            uri.Query);
+
+        RegisteredSuccessfully =
+            query.TryGetValue("registered", out var registered) &&
+            registered == "true";
+
+        IsReturningUser = !RegisteredSuccessfully;
+
+        IsLoading = false;
+    }
+}

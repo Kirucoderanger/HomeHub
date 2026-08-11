@@ -2,6 +2,7 @@ using HomeHub.Components;
 using HomeHub.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,12 +18,21 @@ builder.Services
     .AddDefaultIdentity<ApplicationUser>(options =>
     {
         options.SignIn.RequireConfirmedAccount = false;
+
+        // Password requirements 
+        options.Password.RequiredLength = 8;
+        options.Password.RequireDigit = true;
+        options.Password.RequireNonAlphanumeric = true;
+        options.Password.RequireUppercase = true;
+        options.Password.RequireLowercase = true;
     })
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 // Add services to the container.
+builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
 
 var app = builder.Build();
 
@@ -41,17 +51,28 @@ app.UseStatusCodePagesWithReExecute(
     createScopeForStatusCodePages: true);
 
 app.UseHttpsRedirection();
-
-app.UseAntiforgery();
-
 // Authentication and authorization middleware.
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseAntiforgery();
+
+
 
 app.MapStaticAssets();
 
 app.MapRazorComponents<HomeHub.Components.App>()
     .AddInteractiveServerRenderMode();
+
+//Endpoint to handle secure cookie invalidation and logout
+app.MapPost("/account/logout", async (
+    SignInManager<ApplicationUser> signInManager,
+    NavigationManager navigationManager) =>
+{
+    await signInManager.SignOutAsync();
+    return Results.Redirect("/account/login");
+});
+
 
 // Database health check endpoint.
 // This endpoint is intended for development and diagnostics.
