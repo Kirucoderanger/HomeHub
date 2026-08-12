@@ -1,0 +1,137 @@
+@page "/favorites"
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using HomeHub.Data
+@using HomeHub.Models
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.EntityFrameworkCore
+
+@inject ApplicationDbContext Db
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+
+<PageTitle>My Favorites - HomeHub</PageTitle>
+
+<div class="container py-4">
+
+    <h1>My Favorites</h1>
+
+    <p class="text-muted">
+        Properties you have saved.
+    </p>
+
+    @if (FavoritesList.Count == 0)
+    {
+        <div class="alert alert-info">
+            You haven't added any properties to your favorites yet.
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+
+            @foreach (var favorite in FavoritesList)
+            {
+                var property = favorite.Property;
+
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="card h-100 shadow-sm">
+
+                        @if (property.Images.Any())
+                        {
+                            <img src="/property-images/@property.Images.First().Id"
+                                 class="card-img-top"
+                                 style="height:220px; object-fit:cover;"
+                                 alt="@property.Title" />
+                        }
+
+                        <div class="card-body">
+
+                            <h2 class="h5">
+                                @property.Title
+                            </h2>
+
+                            <p class="text-muted">
+                                @property.City
+                            </p>
+
+                            <p>
+                                <strong>
+                                    @property.Price.ToString("N2")
+                                </strong>
+                            </p>
+
+                            <a href="/properties/details/@property.Id"
+                               class="btn btn-primary">
+                                View
+                            </a>
+
+                            <button class="btn btn-outline-danger ms-2"
+                                    @onclick="() => RemoveFavorite(property.Id)">
+                                Remove
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }
+
+</div>
+
+@code {
+
+    private List<PropertyFavorite> FavoritesList = new();
+
+    private string? UserId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state =
+            await AuthenticationStateProvider
+                .GetAuthenticationStateAsync();
+
+        UserId = state.User.FindFirst(
+            System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+        await LoadFavorites();
+    }
+
+    private async Task LoadFavorites()
+    {
+        if (string.IsNullOrEmpty(UserId))
+            return;
+
+        FavoritesList = await Db.PropertyFavorites
+            .Where(f => f.UserId == UserId)
+            .Include(f => f.Property)
+                .ThenInclude(p => p.Images)
+            .OrderByDescending(f => f.CreatedAt)
+            .ToListAsync();
+    }
+
+    private async Task RemoveFavorite(int propertyId)
+    {
+        if (string.IsNullOrEmpty(UserId))
+            return;
+
+        var favorite = await Db.PropertyFavorites
+            .FindAsync(propertyId, UserId);
+
+        if (favorite is not null)
+        {
+            Db.PropertyFavorites.Remove(favorite);
+
+            await Db.SaveChangesAsync();
+
+            await LoadFavorites();
+        }
+    }
+}

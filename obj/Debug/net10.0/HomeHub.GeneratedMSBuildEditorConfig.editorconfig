@@ -43,6 +43,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xBcHAucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/kirub/Documents/BYU-projectcourses/.NET-CSE-325/ASP.NET/project/HomeHub/Components/Pages/AdminTest.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xBZG1pblRlc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kirub/Documents/BYU-projectcourses/.NET-CSE-325/ASP.NET/project/HomeHub/Components/Pages/Admin/AdminDashboard.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xBZG1pblxBZG1pbkRhc2hib2FyZC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/kirub/Documents/BYU-projectcourses/.NET-CSE-325/ASP.NET/project/HomeHub/Components/Pages/Counter.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDb3VudGVyLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
@@ -55,12 +63,36 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xFcnJvci5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/kirub/Documents/BYU-projectcourses/.NET-CSE-325/ASP.NET/project/HomeHub/Components/Pages/Favorites.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xGYXZvcml0ZXMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/kirub/Documents/BYU-projectcourses/.NET-CSE-325/ASP.NET/project/HomeHub/Components/Pages/Home.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xIb21lLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/kirub/Documents/BYU-projectcourses/.NET-CSE-325/ASP.NET/project/HomeHub/Components/Pages/NotFound.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xOb3RGb3VuZC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kirub/Documents/BYU-projectcourses/.NET-CSE-325/ASP.NET/project/HomeHub/Components/Pages/Properties.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xQcm9wZXJ0aWVzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kirub/Documents/BYU-projectcourses/.NET-CSE-325/ASP.NET/project/HomeHub/Components/Pages/PropertiesCRUD/Create.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xQcm9wZXJ0aWVzQ1JVRFxDcmVhdGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kirub/Documents/BYU-projectcourses/.NET-CSE-325/ASP.NET/project/HomeHub/Components/Pages/PropertiesCRUD/Delete.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xQcm9wZXJ0aWVzQ1JVRFxEZWxldGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kirub/Documents/BYU-projectcourses/.NET-CSE-325/ASP.NET/project/HomeHub/Components/Pages/PropertiesCRUD/Details.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xQcm9wZXJ0aWVzQ1JVRFxEZXRhaWxzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/kirub/Documents/BYU-projectcourses/.NET-CSE-325/ASP.NET/project/HomeHub/Components/Pages/PropertiesCRUD/Edit.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xQcm9wZXJ0aWVzQ1JVRFxFZGl0LnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/kirub/Documents/BYU-projectcourses/.NET-CSE-325/ASP.NET/project/HomeHub/Components/Pages/Weather.razor]

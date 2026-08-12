@@ -75,6 +75,9 @@ using (var scope = app.Services.CreateScope())
             await userManager.AddToRoleAsync(user, "User");
         }
     }
+
+    // Seed the admin user
+    await AdminSeeder.SeedAsync(scope.ServiceProvider);
 }
 
 // Configure the HTTP request pipeline.
@@ -148,6 +151,25 @@ await db.Database.CanConnectAsync();
                 "Unable to connect to the database.",
             statusCode: 500);
     }
+});
+
+app.MapGet("/property-images/{id:int}", async (
+    int id,
+    ApplicationDbContext db) =>
+{
+    var image = await db.PropertyImages
+        .AsNoTracking()
+        .FirstOrDefaultAsync(i => i.Id == id);
+
+    if (image is null)
+    {
+        return Results.NotFound();
+    }
+
+    return Results.File(
+        image.Data,
+        image.ContentType,
+        image.FileName);
 });
 
 
