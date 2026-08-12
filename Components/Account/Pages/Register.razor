@@ -118,11 +118,22 @@
             return;
         }
 
+        var roleResult = await UserManager.AddToRoleAsync(user, "User");
+
+if (!roleResult.Succeeded)
+{
+    ErrorMessage = string.Join(
+        " ",
+        roleResult.Errors.Select(error => error.Description));
+
+    return;
+}
+
         // Sign the newly registered user into HomeHub using the HttpContext lifecycle
         await SignInManager.SignInAsync(user, isPersistent: false);
 
         // Redirect safely because headers are writable during Static SSR execution
-        NavigationManager.NavigateTo("/dashboard?registered=true", forceLoad: true);
+        NavigationManager.NavigateTo("/dashboard?registered=true");
     }
 
     private sealed class RegisterInput

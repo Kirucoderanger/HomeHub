@@ -63,7 +63,7 @@
 
                     </EditForm>
 
-                    @* Link navigating back to functional registration page *@
+                    @* Link navigating back to your functional registration page *@
                     <div class="text-center mt-4">
                         <span>New to HomeHub?</span>
                         <a href="/account/register" class="ms-1">
@@ -101,7 +101,7 @@
         if (result.Succeeded)
         {
             Logger.LogInformation("User logged in successfully.");
-            NavigationManager.NavigateTo("/dashboard", forceLoad: true);
+            NavigationManager.NavigateTo("/dashboard");
             return;
         }
         

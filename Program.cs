@@ -2,97 +2,153 @@ using HomeHub.Components;
 using HomeHub.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Register Entity Framework Core and configure the application
 // to use the Azure SQL database defined in the connection string.
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")));
+options.UseSqlServer(
+builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Register ASP.NET Core Identity and configure the application
 // to use ApplicationUser for authentication and authorization.
 builder.Services
-    .AddDefaultIdentity<ApplicationUser>(options =>
-    {
-        options.SignIn.RequireConfirmedAccount = false;
+.AddDefaultIdentity<ApplicationUser>(options =>
+{
+options.SignIn.RequireConfirmedAccount = false;
 
-        // Password requirements 
-        options.Password.RequiredLength = 8;
-        options.Password.RequireDigit = true;
-        options.Password.RequireNonAlphanumeric = true;
-        options.Password.RequireUppercase = true;
-        options.Password.RequireLowercase = true;
-    })
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+
+    // Password requirements
+    options.Password.RequiredLength = 8;
+    options.Password.RequireDigit = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireLowercase = true;
+})
+
+.AddRoles<IdentityRole>()
+.AddEntityFrameworkStores<ApplicationDbContext>();
+
 
 // Add services to the container.
 builder.Services.AddCascadingAuthenticationState();
-builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
 
+builder.Services.AddRazorComponents()
+.AddInteractiveServerComponents();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider
+        .GetRequiredService<RoleManager<IdentityRole>>();
+
+    var userManager = scope.ServiceProvider
+        .GetRequiredService<UserManager<ApplicationUser>>();
+
+    string[] roles =
+    {
+        "Admin",
+        "PropertyOwner",
+        "User"
+    };
+
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+        {
+            await roleManager.CreateAsync(
+                new IdentityRole(role));
+        }
+    }
+
+    // Give existing users the default User role
+    var users = userManager.Users.ToList();
+
+    foreach (var user in users)
+    {
+        var userRoles = await userManager.GetRolesAsync(user);
+
+        if (userRoles.Count == 0)
+        {
+            await userManager.AddToRoleAsync(user, "User");
+        }
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error", createScopeForErrors: true);
+app.UseExceptionHandler(
+"/Error",
+createScopeForErrors: true);
 
-    // The default HSTS value is 30 days. You may want to change this
-    // for production scenarios.
-    app.UseHsts();
+
+app.UseHsts();
+
+
 }
 
 app.UseStatusCodePagesWithReExecute(
-    "/not-found",
-    createScopeForStatusCodePages: true);
+"/not-found",
+createScopeForStatusCodePages: true);
 
 app.UseHttpsRedirection();
+
 // Authentication and authorization middleware.
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseAntiforgery();
 
-
-
 app.MapStaticAssets();
 
-app.MapRazorComponents<HomeHub.Components.App>()
-    .AddInteractiveServerRenderMode();
-
-//Endpoint to handle secure cookie invalidation and logout
-app.MapPost("/account/logout", async (
-    SignInManager<ApplicationUser> signInManager,
-    NavigationManager navigationManager) =>
+// Secure logout endpoint.
+// The browser submits a POST request here,
+// Identity clears the authentication cookie,
+// and the user is redirected to the login page.
+app.MapPost(
+"/account/logout",
+async (SignInManager<ApplicationUser> signInManager) =>
 {
-    await signInManager.SignOutAsync();
-    return Results.Redirect("/account/login");
+await signInManager.SignOutAsync();
+
+
+    return Results.Redirect(
+        "/account/login?loggedout=true");
 });
 
 
+// Razor Components
+app.MapRazorComponents<HomeHub.Components.App>()
+.AddInteractiveServerRenderMode();
+
 // Database health check endpoint.
-// This endpoint is intended for development and diagnostics.
-app.MapGet("/health/database", async (ApplicationDbContext db) =>
+// Intended for development and diagnostics.
+app.MapGet(
+"/health/database",
+async (ApplicationDbContext db) =>
 {
-    try
-    {
-        var canConnect = await db.Database.CanConnectAsync();
+try
+{
+var canConnect =
+await db.Database.CanConnectAsync();
+
 
         return canConnect
             ? Results.Ok(new { status = "connected" })
-            : Results.Problem("Database connection failed.");
+            : Results.Problem(
+                "Database connection failed.");
     }
     catch (Exception)
     {
         return Results.Problem(
-            detail: "Unable to connect to the database.",
+            detail:
+                "Unable to connect to the database.",
             statusCode: 500);
     }
 });
 
-app.Run();
 
+app.Run();
