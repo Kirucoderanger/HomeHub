@@ -1,0 +1,265 @@
+@page "/properties/create"
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using HomeHub.Data
+@using HomeHub.Models
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Forms
+
+@inject ApplicationDbContext Db
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+@inject ILogger<Create> Logger
+
+<PageTitle>Add Property - HomeHub</PageTitle>
+
+<div class="container py-4">
+
+    <h1>Add Property</h1>
+
+    @if (!IsReady)
+    {
+        <p class="text-muted">Loading...</p>
+    }
+    else
+    {
+        <EditForm Model="PropertyModel"
+                  OnValidSubmit="CreateProperty"
+                  OnInvalidSubmit="HandleInvalidSubmit">
+
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" />
+
+            <div class="row g-3">
+
+                <div class="col-md-8">
+                    <label class="form-label">Title</label>
+                    <InputText class="form-control"
+                               @bind-Value="PropertyModel.Title" />
+                    <ValidationMessage For="@(() => PropertyModel.Title)" />
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Property type</label>
+
+                    <InputSelect class="form-select"
+                                 @bind-Value="PropertyModel.PropertyType">
+
+                        <option value="House">House</option>
+                        <option value="Apartment">Apartment</option>
+                        <option value="Condo">Condo</option>
+                        <option value="Villa">Villa</option>
+                        <option value="Land">Land</option>
+
+                    </InputSelect>
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label">Description</label>
+
+                    <InputTextArea class="form-control"
+                                   rows="5"
+                                   @bind-Value="PropertyModel.Description" />
+
+                    <ValidationMessage For="@(() => PropertyModel.Description)" />
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Address</label>
+
+                    <InputText class="form-control"
+                               @bind-Value="PropertyModel.Address" />
+                    <ValidationMessage For="@(() => PropertyModel.Address)" />
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">City</label>
+
+                    <InputText class="form-control"
+                               @bind-Value="PropertyModel.City" />
+                    <ValidationMessage For="@(() => PropertyModel.City)" />
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Region</label>
+
+                    <InputText class="form-control"
+                               @bind-Value="PropertyModel.Region" />
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Price</label>
+
+                    <InputNumber class="form-control"
+                                 @bind-Value="PropertyModel.Price" />
+                    <ValidationMessage For="@(() => PropertyModel.Price)" />
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label">Bedrooms</label>
+
+                    <InputNumber class="form-control"
+                                 @bind-Value="PropertyModel.Bedrooms" />
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label">Bathrooms</label>
+
+                    <InputNumber class="form-control"
+                                 @bind-Value="PropertyModel.Bathrooms" />
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Area (m²)</label>
+
+                    <InputNumber class="form-control"
+                                 @bind-Value="PropertyModel.AreaSqm" />
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label">
+                        Property images
+                    </label>
+
+                    <InputFile OnChange="HandleFilesSelected"
+                               multiple
+                               accept="image/*" />
+
+                    @if (SelectedFiles.Count > 0)
+                    {
+                        <p class="mt-2 text-muted">
+                            @SelectedFiles.Count image(s) selected.
+                        </p>
+                    }
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(ErrorMessage))
+                {
+                    <div class="alert alert-danger">
+                        @ErrorMessage
+                    </div>
+                }
+
+                <div class="col-12">
+
+                    <button type="submit"
+                            class="btn btn-primary"
+                            disabled="@IsSaving">
+                        @(IsSaving ? "Saving..." : "Create Property")
+                    </button>
+
+                    <a href="/properties"
+                       class="btn btn-outline-secondary ms-2">
+                        Cancel
+                    </a>
+
+                </div>
+
+            </div>
+
+        </EditForm>
+    }
+</div>
+
+@code {
+
+    private Property PropertyModel = new();
+
+    private List<IBrowserFile> SelectedFiles = new();
+
+    private string? ErrorMessage;
+
+    private bool IsSaving;
+
+    private bool IsReady;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state =
+            await AuthenticationStateProvider
+                .GetAuthenticationStateAsync();
+
+        var userId = state.User.FindFirst(
+            System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            NavigationManager.NavigateTo(
+                "/account/login",
+                forceLoad: true);
+
+            return;
+        }
+
+        PropertyModel.OwnerId = userId;
+
+        IsReady = true;
+    }
+
+    private Task HandleFilesSelected(
+        InputFileChangeEventArgs e)
+    {
+        SelectedFiles = e.GetMultipleFiles(10).ToList();
+        return Task.CompletedTask;
+    }
+
+    private void HandleInvalidSubmit()
+    {
+        Logger.LogWarning("Property form failed validation.");
+    }
+
+    private async Task CreateProperty()
+    {
+        ErrorMessage = null;
+        IsSaving = true;
+
+        try
+        {
+            PropertyModel.CreatedAt = DateTime.UtcNow;
+
+            Db.Properties.Add(PropertyModel);
+
+            await Db.SaveChangesAsync();
+
+            foreach (var file in SelectedFiles)
+            {
+                if (!file.ContentType.StartsWith("image/"))
+                    continue;
+
+                if (file.Size > 5 * 1024 * 1024)
+                    continue;
+
+                using var stream = file.OpenReadStream(
+                    maxAllowedSize: 5 * 1024 * 1024);
+
+                using var memory = new MemoryStream();
+
+                await stream.CopyToAsync(memory);
+
+                Db.PropertyImages.Add(new PropertyImage
+                {
+                    PropertyId = PropertyModel.Id,
+                    FileName = file.Name,
+                    ContentType = file.ContentType,
+                    Data = memory.ToArray()
+                });
+            }
+
+            await Db.SaveChangesAsync();
+
+            NavigationManager.NavigateTo(
+                $"/properties/details/{PropertyModel.Id}");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to create property.");
+            ErrorMessage = "Something went wrong creating the property. Please try again.";
+        }
+        finally
+        {
+            IsSaving = false;
+        }
+    }
+}

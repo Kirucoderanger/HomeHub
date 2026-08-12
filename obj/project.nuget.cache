@@ -1,12 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "+nk0w8/vzz4=",
+  "dgSpecHash": "+WZTo0YdeqA=",
   "success": true,
   "projectFilePath": "C:\\Users\\kirub\\Documents\\BYU-projectcourses\\.NET-CSE-325\\ASP.NET\\project\\HomeHub\\HomeHub.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\kirub\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\kirub\\.nuget\\packages\\microsoft.aspnetcore.app.internal.assets\\10.0.9\\microsoft.aspnetcore.app.internal.assets.10.0.9.nupkg.sha512",
     "C:\\Users\\kirub\\.nuget\\packages\\microsoft.aspnetcore.identity.entityframeworkcore\\10.0.10\\microsoft.aspnetcore.identity.entityframeworkcore.10.0.10.nupkg.sha512",
+    "C:\\Users\\kirub\\.nuget\\packages\\microsoft.aspnetcore.identity.ui\\10.0.10\\microsoft.aspnetcore.identity.ui.10.0.10.nupkg.sha512",
     "C:\\Users\\kirub\\.nuget\\packages\\microsoft.bcl.cryptography\\9.0.13\\microsoft.bcl.cryptography.9.0.13.nupkg.sha512",
     "C:\\Users\\kirub\\.nuget\\packages\\microsoft.build.framework\\18.0.2\\microsoft.build.framework.18.0.2.nupkg.sha512",
     "C:\\Users\\kirub\\.nuget\\packages\\microsoft.codeanalysis.analyzers\\3.11.0\\microsoft.codeanalysis.analyzers.3.11.0.nupkg.sha512",
@@ -27,6 +28,7 @@
     "C:\\Users\\kirub\\.nuget\\packages\\microsoft.entityframeworkcore.sqlserver\\10.0.10\\microsoft.entityframeworkcore.sqlserver.10.0.10.nupkg.sha512",
     "C:\\Users\\kirub\\.nuget\\packages\\microsoft.entityframeworkcore.tools\\10.0.10\\microsoft.entityframeworkcore.tools.10.0.10.nupkg.sha512",
     "C:\\Users\\kirub\\.nuget\\packages\\microsoft.extensions.dependencymodel\\10.0.10\\microsoft.extensions.dependencymodel.10.0.10.nupkg.sha512",
+    "C:\\Users\\kirub\\.nuget\\packages\\microsoft.extensions.fileproviders.embedded\\10.0.10\\microsoft.extensions.fileproviders.embedded.10.0.10.nupkg.sha512",
     "C:\\Users\\kirub\\.nuget\\packages\\microsoft.identitymodel.abstractions\\8.16.0\\microsoft.identitymodel.abstractions.8.16.0.nupkg.sha512",
     "C:\\Users\\kirub\\.nuget\\packages\\microsoft.identitymodel.jsonwebtokens\\8.16.0\\microsoft.identitymodel.jsonwebtokens.8.16.0.nupkg.sha512",
     "C:\\Users\\kirub\\.nuget\\packages\\microsoft.identitymodel.logging\\8.16.0\\microsoft.identitymodel.logging.8.16.0.nupkg.sha512",

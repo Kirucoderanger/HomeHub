@@ -1,0 +1,248 @@
+@page "/properties/edit/{Id:int}"
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using HomeHub.Data
+@using HomeHub.Models
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.EntityFrameworkCore
+
+@inject ApplicationDbContext Db
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit Property - HomeHub</PageTitle>
+
+<div class="container py-4">
+
+@if (Property is null)
+{
+    <div class="alert alert-info">
+        Property not found.
+    </div>
+}
+else
+{
+    <h1>Edit Property</h1>
+
+    <EditForm Model="Property"
+              OnValidSubmit="SaveProperty">
+
+        <DataAnnotationsValidator />
+
+        <div class="row g-3">
+
+            <div class="col-md-8">
+                <label class="form-label">Title</label>
+
+                <InputText class="form-control"
+                           @bind-Value="Property.Title" />
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Property type</label>
+
+                <InputSelect class="form-select"
+                             @bind-Value="Property.PropertyType">
+
+                    <option value="House">House</option>
+                    <option value="Apartment">Apartment</option>
+                    <option value="Condo">Condo</option>
+                    <option value="Villa">Villa</option>
+                    <option value="Land">Land</option>
+
+                </InputSelect>
+            </div>
+
+            <div class="col-12">
+
+                <label class="form-label">
+                    Description
+                </label>
+
+                <InputTextArea class="form-control"
+                               rows="5"
+                               @bind-Value="Property.Description" />
+
+            </div>
+
+            <div class="col-md-6">
+
+                <label class="form-label">
+                    Address
+                </label>
+
+                <InputText class="form-control"
+                           @bind-Value="Property.Address" />
+
+            </div>
+
+            <div class="col-md-3">
+
+                <label class="form-label">
+                    City
+                </label>
+
+                <InputText class="form-control"
+                           @bind-Value="Property.City" />
+
+            </div>
+
+            <div class="col-md-3">
+
+                <label class="form-label">
+                    Region
+                </label>
+
+                <InputText class="form-control"
+                           @bind-Value="Property.Region" />
+
+            </div>
+
+            <div class="col-md-4">
+
+                <label class="form-label">
+                    Price
+                </label>
+
+                <InputNumber class="form-control"
+                             @bind-Value="Property.Price" />
+
+            </div>
+
+            <div class="col-md-2">
+
+                <label class="form-label">
+                    Bedrooms
+                </label>
+
+                <InputNumber class="form-control"
+                             @bind-Value="Property.Bedrooms" />
+
+            </div>
+
+            <div class="col-md-2">
+
+                <label class="form-label">
+                    Bathrooms
+                </label>
+
+                <InputNumber class="form-control"
+                             @bind-Value="Property.Bathrooms" />
+
+            </div>
+
+            <div class="col-md-4">
+
+                <label class="form-label">
+                    Area
+                </label>
+
+                <InputNumber class="form-control"
+                             @bind-Value="Property.AreaSqm" />
+
+            </div>
+
+            <div class="col-12">
+
+                <label class="form-label">
+                    Add more images
+                </label>
+
+                <InputFile OnChange="HandleFilesSelected"
+                           multiple
+                           accept="image/*" />
+
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(ErrorMessage))
+            {
+                <div class="alert alert-danger">
+                    @ErrorMessage
+                </div>
+            }
+
+            <div class="col-12">
+
+                <button class="btn btn-primary"
+                        type="submit">
+                    Save Changes
+                </button>
+
+                <a href="/properties/details/@Property.Id"
+                   class="btn btn-outline-secondary ms-2">
+                    Cancel
+                </a>
+
+            </div>
+
+        </div>
+
+    </EditForm>
+}
+
+</div>
+
+@code {
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private Property? Property;
+
+    private List<IBrowserFile> SelectedFiles = new();
+
+    private string? ErrorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Property = await Db.Properties
+            .Include(p => p.Images)
+            .FirstOrDefaultAsync(p => p.Id == Id);
+    }
+
+    private void HandleFilesSelected(
+        InputFileChangeEventArgs e)
+    {
+        SelectedFiles = e.GetMultipleFiles(10).ToList();
+    }
+
+    private async Task SaveProperty()
+    {
+        if (Property is null)
+            return;
+
+        Property.UpdatedAt = DateTime.UtcNow;
+
+        foreach (var file in SelectedFiles)
+        {
+            if (!file.ContentType.StartsWith("image/"))
+                continue;
+
+            if (file.Size > 5 * 1024 * 1024)
+                continue;
+
+            using var stream = file.OpenReadStream(
+                maxAllowedSize: 5 * 1024 * 1024);
+
+            using var memory = new MemoryStream();
+
+            await stream.CopyToAsync(memory);
+
+            Db.PropertyImages.Add(new PropertyImage
+            {
+                PropertyId = Property.Id,
+                FileName = file.Name,
+                ContentType = file.ContentType,
+                Data = memory.ToArray()
+            });
+        }
+
+        await Db.SaveChangesAsync();
+
+        NavigationManager.NavigateTo(
+            $"/properties/details/{Property.Id}");
+    }
+}

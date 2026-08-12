@@ -9,6 +9,7 @@
       "HomeHub/1.0.0": {
         "dependencies": {
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "10.0.10",
+          "Microsoft.AspNetCore.Identity.UI": "10.0.10",
           "Microsoft.Data.SqlClient": "7.0.2",
           "Microsoft.EntityFrameworkCore.Design": "10.0.10",
           "Microsoft.EntityFrameworkCore.SqlServer": "10.0.10"
@@ -31,6 +32,17 @@
         },
         "runtime": {
           "lib/net10.0/Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll": {
+            "assemblyVersion": "10.0.10.0",
+            "fileVersion": "10.0.1026.32716"
+          }
+        }
+      },
+      "Microsoft.AspNetCore.Identity.UI/10.0.10": {
+        "dependencies": {
+          "Microsoft.Extensions.FileProviders.Embedded": "10.0.10"
+        },
+        "runtime": {
+          "lib/net10.0/Microsoft.AspNetCore.Identity.UI.dll": {
             "assemblyVersion": "10.0.10.0",
             "fileVersion": "10.0.1026.32716"
           }
@@ -504,6 +516,14 @@
           }
         }
       },
+      "Microsoft.Extensions.FileProviders.Embedded/10.0.10": {
+        "runtime": {
+          "lib/net10.0/Microsoft.Extensions.FileProviders.Embedded.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.1026.32716"
+          }
+        }
+      },
       "Microsoft.IdentityModel.Abstractions/8.16.0": {
         "runtime": {
           "lib/net10.0/Microsoft.IdentityModel.Abstractions.dll": {
@@ -724,6 +744,13 @@
       "path": "microsoft.aspnetcore.identity.entityframeworkcore/10.0.10",
       "hashPath": "microsoft.aspnetcore.identity.entityframeworkcore.10.0.10.nupkg.sha512"
     },
+    "Microsoft.AspNetCore.Identity.UI/10.0.10": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-RdI9FJYK+sSU20x+/SUumKoXRrnIT4PpcqaZ6lwQvMpV4XJKir/yaF0k7P9C7V/GTijxlOzymFlT+McXMotZDw==",
+      "path": "microsoft.aspnetcore.identity.ui/10.0.10",
+      "hashPath": "microsoft.aspnetcore.identity.ui.10.0.10.nupkg.sha512"
+    },
     "Microsoft.Bcl.Cryptography/9.0.13": {
       "type": "package",
       "serviceable": true,
@@ -842,6 +869,13 @@
       "sha512": "sha512-rfZA1RjR021RPqSmIPovfz2aOd79TGqJ9BengbjnzIISOVwjLmuSDnhCMmiY/1c6iYvGolQ1iNGzkav0u11XEA==",
       "path": "microsoft.extensions.dependencymodel/10.0.10",
       "hashPath": "microsoft.extensions.dependencymodel.10.0.10.nupkg.sha512"
+    },
+    "Microsoft.Extensions.FileProviders.Embedded/10.0.10": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-TZQQIZ1wFmQX7WdRAyhaDlv3splUPOYheTP3aZtoLpxMlVnLOFRjiLaDB0PZX/d27N52+FLbiNkwL02x4hZgjg==",
+      "path": "microsoft.extensions.fileproviders.embedded/10.0.10",
+      "hashPath": "microsoft.extensions.fileproviders.embedded.10.0.10.nupkg.sha512"
     },
     "Microsoft.IdentityModel.Abstractions/8.16.0": {
       "type": "package",

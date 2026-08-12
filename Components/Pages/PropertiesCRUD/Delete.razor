@@ -1,0 +1,83 @@
+@page "/properties/delete/{Id:int}"
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using HomeHub.Data
+@using HomeHub.Models
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.EntityFrameworkCore
+
+@inject ApplicationDbContext Db
+@inject NavigationManager NavigationManager
+
+<PageTitle>Delete Property - HomeHub</PageTitle>
+
+<div class="container py-5">
+
+    @if (Property is null)
+    {
+        <div class="alert alert-info">
+            Property not found.
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm">
+
+            <div class="card-body">
+
+                <h1 class="h3">
+                    Delete Property
+                </h1>
+
+                <p>
+                    Are you sure you want to delete
+                    <strong>@Property.Title</strong>?
+                </p>
+
+                <div class="alert alert-warning">
+                    This action cannot be undone.
+                </div>
+
+                <button class="btn btn-danger"
+                        @onclick="DeleteProperty">
+                    Delete Property
+                </button>
+
+                <a href="/properties/details/@Property.Id"
+                   class="btn btn-outline-secondary ms-2">
+                    Cancel
+                </a>
+
+            </div>
+
+        </div>
+    }
+
+</div>
+
+@code {
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private Property? Property;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Property = await Db.Properties
+            .FirstOrDefaultAsync(p => p.Id == Id);
+    }
+
+    private async Task DeleteProperty()
+    {
+        if (Property is null)
+            return;
+
+        Db.Properties.Remove(Property);
+
+        await Db.SaveChangesAsync();
+
+        NavigationManager.NavigateTo("/properties");
+    }
+}

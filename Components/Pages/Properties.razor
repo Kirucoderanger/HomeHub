@@ -1,0 +1,272 @@
+@page "/properties"
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using HomeHub.Data
+@using HomeHub.Models
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.EntityFrameworkCore
+
+@inject ApplicationDbContext Db
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+
+<PageTitle>Properties - HomeHub</PageTitle>
+
+<div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1>Properties</h1>
+            <p class="text-muted mb-0">
+                Discover properties available on HomeHub.
+            </p>
+        </div>
+
+        <a href="/properties/create" class="btn btn-primary">
+            Add Property
+        </a>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+
+            <div class="row g-3">
+
+                <div class="col-md-4">
+                    <label class="form-label">Search</label>
+                    <input class="form-control"
+                           placeholder="Title, city or address..."
+                           @bind="SearchTerm"
+                           @bind:event="oninput" />
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Property type</label>
+
+                    <select class="form-select" @bind="SelectedType">
+                        <option value="">All types</option>
+                        <option value="House">House</option>
+                        <option value="Apartment">Apartment</option>
+                        <option value="Condo">Condo</option>
+                        <option value="Villa">Villa</option>
+                        <option value="Land">Land</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label">Min price</label>
+
+                    <input type="number"
+                           class="form-control"
+                           @bind="MinPrice" />
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label">Max price</label>
+
+                    <input type="number"
+                           class="form-control"
+                           @bind="MaxPrice" />
+                </div>
+
+                <div class="col-md-1 d-flex align-items-end">
+                    <button class="btn btn-outline-secondary w-100"
+                            @onclick="LoadProperties">
+                        Search
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    @if (PropertyList.Count == 0)
+    {
+        <div class="alert alert-info">
+            No properties found.
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+
+            @foreach (var property in PropertyList)
+            {
+                <div class="col-12 col-md-6 col-lg-4">
+
+                    <div class="card h-100 shadow-sm">
+
+                        @if (property.Images.Any())
+                        {
+                            <img src="/property-images/@property.Images.First().Id"
+                                 class="card-img-top"
+                                 style="height:220px; object-fit:cover;"
+                                 alt="@property.Title" />
+                        }
+                        else
+                        {
+                            <div class="bg-light d-flex align-items-center justify-content-center"
+                                 style="height:220px;">
+                                <span class="text-muted">
+                                    No image
+                                </span>
+                            </div>
+                        }
+
+                        <div class="card-body">
+
+                            <div class="d-flex justify-content-between">
+                                <h2 class="h5">
+                                    @property.Title
+                                </h2>
+
+                                <button class="btn btn-sm @(IsFavorite(property.Id)
+                                    ? "btn-danger"
+                                    : "btn-outline-danger")"
+                                        @onclick="() => ToggleFavorite(property.Id)">
+                                    @(IsFavorite(property.Id) ? "♥" : "♡")
+                                </button>
+                            </div>
+
+                            <p class="text-muted">
+                                @property.City
+                            </p>
+
+                            <p>
+                                @property.Description
+                            </p>
+
+                            <div class="mb-2">
+                                <strong>
+                                    @property.Price.ToString("N2")
+                                </strong>
+                            </div>
+
+                            <div class="small text-muted mb-3">
+                                @property.Bedrooms bedrooms ·
+                                @property.Bathrooms bathrooms ·
+                                @property.AreaSqm.ToString("N0") m²
+                            </div>
+
+                            <a href="/properties/details/@property.Id"
+                               class="btn btn-primary">
+                                View property
+                            </a>
+
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+    }
+</div>
+
+@code {
+
+    private List<Property> PropertyList = new();
+
+    private HashSet<int> FavoriteIds = new();
+
+    private string SearchTerm = string.Empty;
+
+    private string SelectedType = string.Empty;
+
+    private decimal? MinPrice;
+
+    private decimal? MaxPrice;
+
+    private string? UserId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state =
+            await AuthenticationStateProvider
+                .GetAuthenticationStateAsync();
+
+        UserId = state.User.FindFirst(
+            System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+        await LoadProperties();
+    }
+
+    private async Task LoadProperties()
+    {
+        var query = Db.Properties
+            .Include(p => p.Images)
+            .AsNoTracking()
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(SearchTerm))
+        {
+            query = query.Where(p =>
+                p.Title.Contains(SearchTerm) ||
+                p.City.Contains(SearchTerm) ||
+                p.Address.Contains(SearchTerm));
+        }
+
+        if (!string.IsNullOrWhiteSpace(SelectedType))
+        {
+            query = query.Where(p =>
+                p.PropertyType == SelectedType);
+        }
+
+        if (MinPrice.HasValue)
+        {
+            query = query.Where(p =>
+                p.Price >= MinPrice.Value);
+        }
+
+        if (MaxPrice.HasValue)
+        {
+            query = query.Where(p =>
+                p.Price <= MaxPrice.Value);
+        }
+
+        PropertyList = await query
+            .OrderByDescending(p => p.CreatedAt)
+            .ToListAsync();
+
+        if (!string.IsNullOrEmpty(UserId))
+        {
+            FavoriteIds = await Db.PropertyFavorites
+                .Where(f => f.UserId == UserId)
+                .Select(f => f.PropertyId)
+                .ToHashSetAsync();
+        }
+    }
+
+    private bool IsFavorite(int propertyId)
+    {
+        return FavoriteIds.Contains(propertyId);
+    }
+
+    private async Task ToggleFavorite(int propertyId)
+    {
+        if (string.IsNullOrEmpty(UserId))
+            return;
+
+        var favorite = await Db.PropertyFavorites
+            .FindAsync(propertyId, UserId);
+
+        if (favorite is null)
+        {
+            Db.PropertyFavorites.Add(new PropertyFavorite
+            {
+                PropertyId = propertyId,
+                UserId = UserId
+            });
+
+            FavoriteIds.Add(propertyId);
+        }
+        else
+        {
+            Db.PropertyFavorites.Remove(favorite);
+            FavoriteIds.Remove(propertyId);
+        }
+
+        await Db.SaveChangesAsync();
+    }
+}

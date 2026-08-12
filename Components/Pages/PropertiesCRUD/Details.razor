@@ -1,0 +1,140 @@
+@page "/properties/details/{Id:int}"
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+@using HomeHub.Data
+@using HomeHub.Models
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.EntityFrameworkCore
+
+@inject ApplicationDbContext Db
+@inject NavigationManager NavigationManager
+
+<PageTitle>Property Details - HomeHub</PageTitle>
+
+<div class="container py-4">
+
+@if (Property is null)
+{
+    <div class="alert alert-info">
+        Property not found.
+    </div>
+}
+else
+{
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h1>@Property.Title</h1>
+            <p class="text-muted">
+                @Property.City, @Property.Region
+            </p>
+        </div>
+
+        <div>
+            <a href="/properties/edit/@Property.Id"
+               class="btn btn-outline-primary">
+                Edit
+            </a>
+
+            <a href="/properties"
+               class="btn btn-outline-secondary ms-2">
+                Back
+            </a>
+            <a href="/properties/delete/@Property.Id"
+               class="btn btn-outline-danger ms-2">
+                Delete
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="row g-4">
+
+        @foreach (var image in Property.Images)
+        {
+            <div class="col-md-4">
+
+                <img src="/property-images/@image.Id"
+                     class="img-fluid rounded shadow-sm"
+                     style="width:100%; height:250px; object-fit:cover;"
+                     alt="@Property.Title" />
+
+            </div>
+        }
+
+    </div>
+
+    <div class="card shadow-sm mt-4">
+
+        <div class="card-body">
+
+            <h2 class="h4">
+                @Property.Price.ToString("N2")
+            </h2>
+
+            <p>
+                @Property.Description
+            </p>
+
+            <hr />
+
+            <div class="row">
+
+                <div class="col-md-3">
+                    <strong>Type</strong>
+                    <br />
+                    @Property.PropertyType
+                </div>
+
+                <div class="col-md-3">
+                    <strong>Bedrooms</strong>
+                    <br />
+                    @Property.Bedrooms
+                </div>
+
+                <div class="col-md-3">
+                    <strong>Bathrooms</strong>
+                    <br />
+                    @Property.Bathrooms
+                </div>
+
+                <div class="col-md-3">
+                    <strong>Area</strong>
+                    <br />
+                    @Property.AreaSqm.ToString("N0") m²
+                </div>
+
+            </div>
+
+            <hr />
+
+            <strong>Address</strong>
+
+            <p>
+                @Property.Address,
+                @Property.City,
+                @Property.Region
+            </p>
+
+        </div>
+    </div>
+}
+
+</div>
+
+@code {
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private Property? Property;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Property = await Db.Properties
+            .Include(p => p.Images)
+            .FirstOrDefaultAsync(p => p.Id == Id);
+    }
+}

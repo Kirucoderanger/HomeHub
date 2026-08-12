@@ -1,0 +1,54 @@
+@page "/admin"
+@attribute [Authorize(Roles = "Admin")]
+
+@using Microsoft.AspNetCore.Authorization
+
+<PageTitle>Admin Dashboard - HomeHub</PageTitle>
+
+<div class="container py-5">
+
+    <div class="mb-4">
+        <h1>Admin Dashboard</h1>
+        <p class="text-muted">
+            Manage HomeHub users and properties.
+        </p>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-12 col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h2 class="h5">Manage Users</h2>
+
+                    <p class="text-muted">
+                        View and manage HomeHub users and their roles.
+                    </p>
+
+                    <a href="/admin/users"
+                       class="btn btn-primary">
+                        Manage Users
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h2 class="h5">Manage Properties</h2>
+
+                    <p class="text-muted">
+                        Review, edit, and remove properties.
+                    </p>
+
+                    <a href="/admin/properties"
+                       class="btn btn-primary">
+                        Manage Properties
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
