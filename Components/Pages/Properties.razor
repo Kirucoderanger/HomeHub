@@ -32,9 +32,9 @@
     <div class="card shadow-sm mb-4">
         <div class="card-body">
 
-            <div class="row g-3">
+            <div class="row g-3 align-items-end">
 
-                <div class="col-md-4">
+                <div class="col-12 col-md-6 col-lg-3">
                     <label class="form-label">Search</label>
                     <input class="form-control"
                            placeholder="Title, city or address..."
@@ -42,7 +42,7 @@
                            @bind:event="oninput" />
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-12 col-md-6 col-lg-3">
                     <label class="form-label">Property type</label>
 
                     <select class="form-select" @bind="SelectedType">
@@ -55,7 +55,7 @@
                     </select>
                 </div>
 
-                <div class="col-md-2">
+                <div class="col-12 col-md-6 col-lg-3">
                     <label class="form-label">Min price</label>
 
                     <input type="number"
@@ -63,7 +63,7 @@
                            @bind="MinPrice" />
                 </div>
 
-                <div class="col-md-2">
+                <div class="col-12 col-md-6 col-lg-3">
                     <label class="form-label">Max price</label>
 
                     <input type="number"
@@ -71,11 +71,18 @@
                            @bind="MaxPrice" />
                 </div>
 
-                <div class="col-md-1 d-flex align-items-end">
-                    <button class="btn btn-outline-secondary w-100"
-                            @onclick="LoadProperties">
-                        Search
-                    </button>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="d-flex gap-2">
+                        <button type="submit"
+                                class="btn btn-primary flex-grow-1" @onclick="LoadProperties">
+                            Search
+                        </button>
+
+                        <button type="button"
+                                class="btn btn-outline-secondary flex-grow-1" @onclick="ClearFilters"  >
+                            Clear
+                        </button>
+                    </div>
                 </div>
 
             </div>
@@ -84,9 +91,22 @@
 
     @if (PropertyList.Count == 0)
     {
-        <div class="alert alert-info">
-            No properties found.
+        <div class="text-center py-5">
+        <div class="mb-3">
+            <span class="fs-1" aria-hidden="true">🏠</span>
         </div>
+
+        <h2 class="h4">No properties found</h2>
+
+        <p class="text-muted">
+            There are no properties matching your current search or filters.
+        </p>
+
+        <button class="btn btn-outline-primary"
+                @onclick="ClearFilters">
+            Clear filters
+        </button>
+    </div>
     }
     else
     {
@@ -94,9 +114,9 @@
 
             @foreach (var property in PropertyList)
             {
-                <div class="col-12 col-md-6 col-lg-4">
+                <div class="col-12 col-sm-6 col-lg-4">
 
-                    <div class="card h-100 shadow-sm">
+                    <article  class="card h-100 shadow-sm">
 
                         @if (property.Images.Any())
                         {
@@ -156,7 +176,7 @@
                             </a>
 
                         </div>
-                    </div>
+                    </article>
                 </div>
             }
 
@@ -236,6 +256,16 @@
                 .Select(f => f.PropertyId)
                 .ToHashSetAsync();
         }
+    }
+
+    private async Task ClearFilters()
+    {
+        SearchTerm = string.Empty;
+        SelectedType = string.Empty;
+        MinPrice = null;
+        MaxPrice = null;
+
+        await LoadProperties();
     }
 
     private bool IsFavorite(int propertyId)
