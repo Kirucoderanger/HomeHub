@@ -211,7 +211,6 @@ C:\Users\kirub\Documents\BYU-projectcourses\.NET-CSE-325\ASP.NET\project\HomeHub
 C:\Users\kirub\Documents\BYU-projectcourses\.NET-CSE-325\ASP.NET\project\HomeHub\obj\Release\net10.0\compressed\nezrqnk58p-{0}-muycvpuwrr-muycvpuwrr.gz
 C:\Users\kirub\Documents\BYU-projectcourses\.NET-CSE-325\ASP.NET\project\HomeHub\obj\Release\net10.0\compressed\v0zgfp0y55-{0}-87fc7y1x7t-87fc7y1x7t.gz
 C:\Users\kirub\Documents\BYU-projectcourses\.NET-CSE-325\ASP.NET\project\HomeHub\obj\Release\net10.0\compressed\yfc7ypekbg-{0}-mlv21k5csn-mlv21k5csn.gz
-C:\Users\kirub\Documents\BYU-projectcourses\.NET-CSE-325\ASP.NET\project\HomeHub\obj\Release\net10.0\compressed\mdw0fw8fjm-{0}-khy4lop6wu-khy4lop6wu.gz
 C:\Users\kirub\Documents\BYU-projectcourses\.NET-CSE-325\ASP.NET\project\HomeHub\obj\Release\net10.0\compressed\cllelbpo5c-{0}-bqjiyaj88i-bqjiyaj88i.gz
 C:\Users\kirub\Documents\BYU-projectcourses\.NET-CSE-325\ASP.NET\project\HomeHub\obj\Release\net10.0\compressed\wd6cnc5e0a-{0}-c2jlpeoesf-c2jlpeoesf.gz
 C:\Users\kirub\Documents\BYU-projectcourses\.NET-CSE-325\ASP.NET\project\HomeHub\obj\Release\net10.0\compressed\rs2d1m50h2-{0}-erw9l3u2r3-erw9l3u2r3.gz
@@ -272,3 +271,4 @@ C:\Users\kirub\Documents\BYU-projectcourses\.NET-CSE-325\ASP.NET\project\HomeHub
 C:\Users\kirub\Documents\BYU-projectcourses\.NET-CSE-325\ASP.NET\project\HomeHub\obj\Release\net10.0\HomeHub.pdb
 C:\Users\kirub\Documents\BYU-projectcourses\.NET-CSE-325\ASP.NET\project\HomeHub\obj\Release\net10.0\HomeHub.genruntimeconfig.cache
 C:\Users\kirub\Documents\BYU-projectcourses\.NET-CSE-325\ASP.NET\project\HomeHub\obj\Release\net10.0\ref\HomeHub.dll
+C:\Users\kirub\Documents\BYU-projectcourses\.NET-CSE-325\ASP.NET\project\HomeHub\obj\Release\net10.0\compressed\mdw0fw8fjm-{0}-3yf91xfke5-3yf91xfke5.gz
